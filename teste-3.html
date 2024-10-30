@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste 3</title>
+    <style>
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .result {
+            background: #fff;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            font-size: 18px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Faturamento Diário da Distribuidora</h1>
+        <div class="result">
+            <h2>Resultados</h2>
+            <p id="menorValor"></p>
+            <p id="maiorValor"></p>
+            <p id="acimaMedia"></p>
+        </div>
+    </div>
+    <script>
+        /* 
+        3) Dado um vetor que guarda o valor de faturamento diário de uma distribuidora, faça um programa, na linguagem que desejar, que calcule e retorne:
+        • O menor valor de faturamento ocorrido em um dia do mês;
+        • O maior valor de faturamento ocorrido em um dia do mês;
+        • Número de dias no mês em que o valor de faturamento diário foi superior à média mensal.
+
+        IMPORTANTE:
+        a) Usar o json ou xml disponível como fonte dos dados do faturamento mensal;
+        b) Podem existir dias sem faturamento, como nos finais de semana e feriados. Estes dias devem ser ignorados no cálculo da média;
+
+        */
+        const menorValor = document.querySelector('#menorValor');
+        const maiorValor = document.querySelector('#maiorValor');
+        const acimaMedia = document.querySelector('#acimaMedia');
+        const URL_DADOS = './dados.json';
+
+        async function carregarDados() {
+            try {
+                const dados = await fetch(URL_DADOS);
+                if (!dados.ok) {
+                    throw new Error('Erro na requisição, ' + dados.status);
+                }
+                return dados.json();
+            } catch (error) {
+                console.log("Erro ao buscar os dados, ", error.message);
+            }
+        }
+
+
+        async function ordenarDados() {
+            const dadosJson = await carregarDados();
+            if(!dadosJson) return;
+            return dadosJson
+                .filter(({ valor }) => valor != 0)
+                .sort((item1, item2) => item1.valor - item2.valor);
+        }
+
+
+        async function obterMinMaxDados() {
+            const dados = await ordenarDados();
+            const dadosDayMin = dados[0];
+            const dadosDayMax = dados[dados.length - 1];
+            menorValor.innerHTML = `<strong>Menor Faturamento dia ${dadosDayMin.dia}:</strong> R$ ${dadosDayMin.valor.toFixed(2)}`;
+            maiorValor.innerHTML = `<strong>Maior Faturamento dia ${dadosDayMax.dia}:</strong> R$ ${dadosDayMax.valor.toFixed(2)}`;
+        }
+
+
+        async function calcularMediaDiaria() {
+            const dados = await ordenarDados();
+            const resultado = dados.reduce((acc, item) => {
+                acc.dias = (acc.dias || 0) + 1;
+                acc.valorTotal = (acc.valorTotal || 0) + item.valor;
+                return acc;
+            }, {});
+            return resultado.valorTotal / resultado.dias;
+        }
+ 
+
+        async function filtrarAcimaDaMedia() {
+            const dayAvg = await calcularMediaDiaria();
+            const dadosArr = await ordenarDados();
+            const resultado = dadosArr.filter(item => item.valor > dayAvg); 
+            acimaMedia.innerHTML = `<strong>Dias com Faturamento Acima da Média:</strong> ${resultado.length} dias`; 
+        }
+
+        async function iniciar() {
+            await obterMinMaxDados();
+            await filtrarAcimaDaMedia();
+        }
+
+        iniciar();
+
+    </script>
+</body>
+</html>

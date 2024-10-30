@@ -5,14 +5,14 @@ IMPORTANTE: Esse número pode ser informado através de qualquer entrada de sua 
 
 */
 
-const numberToTest = 233;
+const numberToBeTested = 233;
 
 function fibonacci(num) {
     if (num <= 1) return num;
     return fibonacci(num - 1) + fibonacci(num - 2);
 }
 
-function fibonacciFinder(numberToTest) {
+function fibonacciFinder(numberToBeTested) {
     const arrFibonacci = [];
     let i = 0;
     let current;
@@ -21,12 +21,12 @@ function fibonacciFinder(numberToTest) {
         current = fibonacci(i);
         arrFibonacci.push(current);
 
-        if (current >= numberToTest) {
-            if (current === numberToTest) {
-                console.log(`O Número ${numberToTest} pertence à sequência Fibonacci.\nA Sequência até o ${numberToTest} é: ${arrFibonacci}`);
+        if (current >= numberToBeTested) {
+            if (current === numberToBeTested) {
+                console.log(`O Número ${numberToBeTested} pertence à sequência Fibonacci.\nA Sequência até o ${numberToBeTested} é: ${arrFibonacci}`);
                 return true;
             } else {
-                console.log(`O Número ${numberToTest} não pertence à sequência Fibonacci.`);
+                console.log(`O Número ${numberToBeTested} não pertence à sequência Fibonacci.`);
                 return false;
             }
         }
@@ -34,4 +34,4 @@ function fibonacciFinder(numberToTest) {
     }
 }
 
-fibonacciFinder(numberToTest);
+fibonacciFinder(numberToBeTested);
