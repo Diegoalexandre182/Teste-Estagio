@@ -1,1 +1,2 @@
-teste
+## Projeto: Técnicas de Programação
+Este repositório contém uma coleção de soluções para exercícios de programação. Cada solução aborda uma situação prática, incluindo a manipulação de sequências numéricas, análise de dados e operações com strings.
